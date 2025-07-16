@@ -28,16 +28,42 @@ app.get("/swagger.json", (req, res) => {
 app.get("/api-swagger", (req, res) => {
   res.send(`
     <!DOCTYPE html>
-    <html>
+    <html lang="en">
       <head>
+        <meta charset="UTF-8">
         <title>Swagger UI</title>
-        <link href="/swagger-ui/swagger-ui.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/swagger-ui/swagger-ui.css" />
+        <style>
+          html {
+            box-sizing: border-box;
+            overflow: -moz-scrollbars-vertical;
+            overflow-y: scroll;
+          }
+          *, *:before, *:after {
+            box-sizing: inherit;
+          }
+          body {
+            margin: 0;
+            background: #fafafa;
+          }
+        </style>
       </head>
       <body>
         <div id="swagger-ui"></div>
-        <script src="/swagger-ui/swagger-ui-bundle.js"></script>
+        <script src="/swagger-ui/swagger-ui-bundle.js" charset="UTF-8"> </script>
+        <script src="/swagger-ui/swagger-ui-standalone-preset.js" charset="UTF-8"> </script>
         <script>
-          SwaggerUIBundle({ url: '/swagger.json', dom_id: '#swagger-ui' });
+          window.onload = function() {
+            SwaggerUIBundle({
+              url: '/swagger.json',
+              dom_id: '#swagger-ui',
+              presets: [
+                SwaggerUIBundle.presets.apis,
+                SwaggerUIStandalonePreset
+              ],
+              layout: "StandaloneLayout"
+            });
+          };
         </script>
       </body>
     </html>
