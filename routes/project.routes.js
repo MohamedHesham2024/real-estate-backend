@@ -3,14 +3,15 @@ const multer = require("multer");
 const path = require("path");
 const Project = require("../models/project.model");
 const router = express.Router();
+const ImageKit = require("imagekit");
 
-// إعداد رفع الملفات
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "uploads/"),
-  filename: (req, file, cb) =>
-    cb(null, Date.now() + "-" + file.originalname.replace(/\s+/g, "")),
+const imagekit = new ImageKit({
+  publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
+  privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
+  urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
 });
 
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 /**
@@ -91,11 +92,20 @@ router.post("/", upload.array("media"), async (req, res) => {
       parsedCategories = categories.split(",").map((c) => c.trim());
     }
 
-    const media = files.map((file, index) => ({
+   const media = await Promise.all(
+  files.map(async (file, index) => {
+    const uploaded = await imagekit.upload({
+      file: file.buffer,
+      fileName: `${Date.now()}-${file.originalname.replace(/\s+/g, "")}`,
+    });
+
+    return {
       index,
-      file_link: `${req.protocol}://${req.get("host")}/uploads/${file.filename}`,
+      file_link: uploaded.url,
       file_type: file.mimetype,
-    }));
+    };
+  })
+);
 
     const project = new Project({
       title,
