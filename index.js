@@ -17,9 +17,15 @@ mongoose
   .catch((err) => console.error(err));
 
 app.use("/api/projects", projectRoutes);
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+console.log("🔍 Swagger Paths:", Object.keys(swaggerSpec.paths || {}));
 
-// app.listen(3000, () => {
-//   console.log("Server running");
-// });
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.get("/swagger.json", (req, res) => {
+  res.setHeader("Content-Type", "application/json");
+  res.send(swaggerSpec);
+});
+
+app.listen(3000, () => {
+  console.log("Server running");
+});
 module.exports = app;
