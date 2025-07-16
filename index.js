@@ -26,7 +26,7 @@ app.get("/swagger.json", (req, res) => {
   res.send(swaggerSpec);
 });
 
-app.listen(3000, () => {
+app.listen(3100, () => {
   console.log("Server running");
 });
 module.exports = app;
