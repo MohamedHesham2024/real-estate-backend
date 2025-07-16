@@ -19,16 +19,8 @@ mongoose
 app.use("/api/projects", projectRoutes);
 console.log("🔍 Swagger Paths:", Object.keys(swaggerSpec.paths || {}));
 
-app.use(
-  "/api-docs",
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerSpec, {
-    explorer: true,
-    swaggerOptions: {
-      url: "/swagger.json", // تحميل مباشر من الـ route اللي هنضيفه
-    },
-  })
-);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 app.get("/swagger.json", (req, res) => {
   res.setHeader("Content-Type", "application/json");
   res.send(swaggerSpec);
